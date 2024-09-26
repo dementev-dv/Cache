@@ -34,19 +34,15 @@ class Q2Cache {
   template<typename F>
   bool lookup_update(KeyT key, F slow_get_page) {
     CMapIt hit = main_hash_.find(key);
-    // std::cout << "looking for " << key << " in main" << std::endl;
     if (hit != main_hash_.end()) {
-      // std::cout << "found " << key << " in main" << std::endl;
       CListIt elt = hit->second;
       if (elt != main_.begin())
         main_.splice(main_.begin(), main_, elt, std::next(elt));
       return true;
     }
 
-    // std::cout << "looking for " << key << " in out" << std::endl;
     OutMapIt outhit = out_hash_.find(key);                                      // decl here??
     if (outhit != out_hash_.end()) {
-      // std::cout << "found " << key << " in out" << std::endl;
       if (main_full()) {
         main_hash_.erase(main_.back().first);
         main_.pop_back();
@@ -56,15 +52,12 @@ class Q2Cache {
       return false;
     }
 
-    // std::cout << "looking for " << key << " in in" << std::endl;
     hit = in_hash_.find(key);
     if (hit != in_hash_.end()) {
-      // std::cout << "found " << key << " in in" << std::endl;
       return true;
     }
     if (in_full()) {
       KeyT moved = in_.back().first;
-      // std::cout << "moving " << moved << " from in to out" << std::endl;
       in_hash_.erase(moved);
       in_.pop_back();
       if (out_full()) {
@@ -77,7 +70,6 @@ class Q2Cache {
     in_.emplace_front(key, slow_get_page(key));
     in_hash_.emplace(key, in_.begin());
 
-    // std::cout << "not found " << key << " in cache" << std::endl;
     return false;
   }
 
