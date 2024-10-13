@@ -4,9 +4,10 @@
 #include <unordered_map>
 #include <cassert>
 
+namespace caches {
 
 template <typename KeyT = int>
-class Belady {
+class BeladyCache {
  public:
   Belady(const Belady&) = delete;
   Belady operator=(const Belady&) = delete;
@@ -67,4 +68,6 @@ class Belady {
   size_t size_;
   std::vector<KeyT> cache_;
   std::vector<KeyT>& keys_;
+};
+
 };
